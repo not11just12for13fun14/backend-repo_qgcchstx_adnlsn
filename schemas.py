@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 # Example schemas (replace with your own):
 
@@ -38,8 +38,31 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
+# ArcynForge core schemas
+
+class Project(BaseModel):
+    """
+    Projects collection schema
+    Collection name: "project"
+    """
+    name: str = Field(..., description="Project name")
+    description: Optional[str] = Field(None, description="Short description")
+    language: str = Field("javascript", description="Primary language")
+    framework: Optional[str] = Field(None, description="Primary framework")
+    tags: List[str] = Field(default_factory=list, description="Project tags")
+    settings: Dict[str, Any] = Field(default_factory=dict, description="Editor/build settings")
+
+class TuningJob(BaseModel):
+    """
+    Model tuning jobs schema
+    Collection name: "tuningjob"
+    """
+    project_id: Optional[str] = Field(None, description="Associated project id")
+    model: str = Field("arcyn-prime", description="Model name")
+    objective: str = Field(..., description="What to optimize for")
+    dataset: Optional[str] = Field(None, description="Dataset reference or URL")
+    status: str = Field("queued", description="queued|running|completed|failed")
+    params: Dict[str, Any] = Field(default_factory=dict, description="Hyperparameters")
 
 # Note: The Flames database viewer will automatically:
 # 1. Read these schemas from GET /schema endpoint
